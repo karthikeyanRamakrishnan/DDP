@@ -1,0 +1,43 @@
+---
+title: "DDP"
+author: "Karthikeyan Ramakrishnan"
+date: "Tuesday, October 21, 2014"
+output: html_document
+runtime: shiny
+---
+
+This is a simple user document to run price predication application of diamond price. 
+
+This is built on shiny, based on simpe linear prediction. 
+
+Input for this app is carat size, the same shall be entered by moving arrow keys.
+
+```{r,echo=FALSE}
+inputPanel(numericInput("cr","cr:",0.1,min=0.1,max=50,step=.25))
+```
+
+The corresponding output shall be as below column:
+
+```{r,echo=FALSE,message=FALSE}
+
+library(UsingR)
+data(diamond)
+renderPrint({
+        fit<-lm(price~carat,data=diamond)
+        predict(fit,newdata=data.frame(carat=input$cr))
+          })
+
+```
+
+Plot for the graph as below, red dots represent the actual price wrt carat size, blue line represents regression line based on linear model.
+
+```{r,echo=FALSE,warning=FALSE}
+renderPlot({
+  fit<-lm(price~carat,data=diamond)
+        plot(diamond$carat,diamond$price,xlab="size of carat",ylab="Price",col="red")
+        lines(diamond$carat,fit$fitted.values,col="blue")
+      })
+
+
+```
+
